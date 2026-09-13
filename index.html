@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vii ❤️ - Game Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose: #f43f5e;
+      --rose-light: #fb7185;
+      --sky: #0ea5e9;
+      --sky-light: #38bdf8;
+      --violet: #a855f7;
+      --violet-light: #c084fc;
+      --bg-start: #fef2f8;
+      --bg-end: #eff6ff;
+      --surface: rgba(255,255,255,0.72);
+      --surface-hover: rgba(255,255,255,0.95);
+      --border: rgba(0,0,0,0.06);
+      --border-light: rgba(255,255,255,0.7);
+      --border-subtle: rgba(0,0,0,0.03);
+      --bg-subtle: rgba(0,0,0,0.02);
+      --text: #1e0a3c;
+      --text-muted: #8b7aa0;
+      --radius: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 24px;
+      --ease: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      --glass: blur(24px) saturate(1.4);
+      --glass-light: blur(16px) saturate(1.2);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px -4px rgba(149,117,205,0.1);
+      --shadow-lg: 0 20px 60px -12px rgba(149,117,205,0.15);
+      --shadow-xl: 0 30px 80px -16px rgba(149,117,205,0.2);
+      --cell-bg: rgba(255,255,255,0.92);
+      --cell-border: rgba(0,0,0,0.06);
+      --cell-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      --grid-bg: linear-gradient(135deg, rgba(244,63,94,0.04), rgba(168,85,247,0.04));
+      --grid-border: rgba(168,85,247,0.08);
+      --surface-card: rgba(255,255,255,0.6);
+      --particle: rgba(168,85,247,0.12);
+      --orb-1: #fecdd3;
+      --orb-2: #bae6fd;
+      --orb-3: #e9d5ff;
+    }
+    [data-theme="dark"] {
+      --bg-start: #0a0515;
+      --bg-end: #140e24;
+      --surface: rgba(20,12,40,0.78);
+      --surface-hover: rgba(35,25,55,0.92);
+      --border: rgba(255,255,255,0.07);
+      --border-light: rgba(255,255,255,0.13);
+      --border-subtle: rgba(255,255,255,0.04);
+      --bg-subtle: rgba(255,255,255,0.03);
+      --text: #e8dff0;
+      --text-muted: #9888b0;
+      --cell-bg: rgba(25,15,45,0.72);
+      --cell-border: rgba(255,255,255,0.07);
+      --cell-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      --grid-bg: linear-gradient(135deg, rgba(168,85,247,0.06), rgba(244,63,94,0.04));
+      --grid-border: rgba(168,85,247,0.12);
+      --surface-card: rgba(18,10,35,0.72);
+      --orb-1: #3d1525;
+      --orb-2: #0f2840;
+      --orb-3: #2a1040;
+      --particle: rgba(168,85,247,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      contain: layout style;
+    }
+
+    /* ─── Animated Background ─── */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      contain: strict;
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background-image: linear-gradient(rgba(168,85,247,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      contain: strict;
+    }
+
+    .bg-orbs {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.2;
+      animation: orbFloat 25s ease-in-out infinite;
+      will-change: transform;
+      contain: layout style;
+    }
+
+    .bg-orbs:nth-child(1) {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--orb-1), transparent);
+      top: -10%; left: -10%;
+      animation-delay: 0s;
+    }
+
+    .bg-orbs:nth-child(2) {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, var(--orb-2), transparent);
+      bottom: -15%; right: -10%;
+      animation-delay: -7s;
+    }
+
+    .bg-orbs:nth-child(3) {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, var(--orb-3), transparent);
+      top: 40%; left: 50%;
+      animation-delay: -14s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(40px, -30px) scale(1.05); }
+      50% { transform: translate(-20px, 40px) scale(0.95); }
+      75% { transform: translate(30px, 20px) scale(1.02); }
+    }
+
+    /* ─── Particles ─── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      contain: strict;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--particle);
+      animation: particleFloat linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes particleFloat {
+      to { transform: translateY(-100vh) rotate(720deg); }
+    }
+
+    /* ─── Login ─── */
+    .login {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 400px;
+      padding: 44px 36px 40px;
+      background: var(--surface-card);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl), inset 0 1px 0 var(--border-light);
+      animation: fadeUp 0.7s var(--spring);
+      contain: layout paint;
+    }
+
+    .login-brand { text-align: center; margin-bottom: 32px; }
+    .login-brand-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, var(--rose), var(--violet));
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 8px 24px rgba(232, 89, 110, 0.2);
+      position: relative;
+    }
+    .login-brand-icon::after {
+      content: ''; position: absolute; inset: -3px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(168,85,247,0.1));
+      z-index: -1;
+    }
+    .login-brand h1 {
+      font-size: 30px; font-weight: 900;
+      background: linear-gradient(135deg, var(--rose), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    .login-brand p { font-size: 13px; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.1px; }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .field input {
+      width: 100%;
+      padding: 13px 16px;
+      font-size: 14px;
+      font-family: inherit;
+      background: var(--surface);
+      backdrop-filter: var(--glass-light);
+      -webkit-backdrop-filter: var(--glass-light);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      outline: none;
+      color: var(--text);
+      transition: var(--ease);
+    }
+    .field input:focus {
+      border-color: var(--rose);
+      box-shadow: 0 0 0 4px rgba(244,63,94,0.1);
+    }
+    .field input::placeholder { color: var(--text-muted); opacity: 0.5; }
+    .field input.error {
+      animation: shake 0.4s ease;
+      border-color: var(--rose);
+      box-shadow: 0 0 0 4px rgba(244,63,94,0.12);
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* ─── Game ─── */
+    .game { display: none; width: 100%; max-width: 680px; margin: 0 auto; }
+    .game.show { animation: fadeUp 0.5s var(--spring); }
+    .game-main {
+      background: var(--surface-card);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      box-shadow: var(--shadow-xl);
+      contain: layout paint;
+    }
+
+    .game-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--surface);
+      backdrop-filter: var(--glass-light);
+      -webkit-backdrop-filter: var(--glass-light);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+    }
+
+    .room-badge {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .room-badge-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--rose), var(--violet));
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .room-badge span { font-size: 14px; font-weight: 700; color: var(--text); }
+    .room-badge small { font-weight: 500; color: var(--text-muted); }
+
+    .scores { display: flex; gap: 8px; }
+    .score-card {
+      min-width: 70px;
+      text-align: center;
+      padding: 4px 12px;
+      border-radius: var(--radius);
+      background: var(--bg-subtle);
+    }
+    .score-card.p1 { border: 1px solid rgba(244,63,94,0.08); }
+    .score-card.p2 { border: 1px solid rgba(14,165,233,0.08); }
+    .score-card .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+    .score-card .num { font-size: 20px; font-weight: 800; }
+    .score-card.p1 .num { color: var(--rose); }
+    .score-card.p2 .num { color: var(--sky); }
+
+    .turn-info {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 14px;
+      font-size: 13px; font-weight: 600; color: var(--text-muted);
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e; display: inline-block;
+    }
+    .dot.waiting { background: var(--text-muted); animation: pulse 1.5s ease-in-out infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .winner-text {
+      text-align: center; font-size: 20px; font-weight: 800;
+      margin: 10px 0; min-height: 28px;
+      color: var(--text);
+      display: none;
+    }
+    .winner-text.show { display: block; animation: fadeUp 0.4s var(--spring); }
+
+    .game-actions {
+      display: flex; gap: 10px; justify-content: center; margin-top: 12px;
+    }
+    .game-actions .btn { min-width: 120px; }
+
+    .grid-wrapper {
+      background: var(--grid-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--grid-border);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      margin: 0 auto 12px;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 4px 24px rgba(149,117,205,0.04);
+      contain: layout paint;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(15, 1fr);
+      gap: 3px;
+      width: fit-content;
+      contain: layout style;
+    }
+
+    .cell {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 600;
+      background: var(--cell-bg);
+      border: 1px solid var(--cell-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      user-select: none;
+      box-shadow: var(--cell-shadow);
+      will-change: transform;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    @media (hover: hover) {
+      .cell:hover:not(.X):not(.O) {
+        background: var(--surface-hover);
+        border-color: rgba(244,63,94,0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(244,63,94,0.08);
+      }
+      .btn:hover { background: var(--surface-hover); transform: translateY(-1px); }
+      .btn-primary:hover {
+        box-shadow: 0 8px 24px rgba(244,63,94,0.35);
+        transform: translateY(-2px);
+      }
+      #musicBtn:hover, #themeBtn:hover {
+        background: var(--surface-hover);
+        color: var(--text);
+        transform: scale(1.08);
+        box-shadow: var(--shadow-md);
+      }
+      .chat-head-close:hover {
+        background: rgba(244,63,94,0.1);
+        color: var(--rose);
+      }
+      .msg-copy:hover { background: var(--border-subtle); color: var(--text); }
+      .toast-close:hover {
+        background: rgba(244,63,94,0.08);
+        color: var(--rose);
+        transform: rotate(90deg);
+      }
+      .login-brand-icon:hover { transform: scale(1.06); }
+    }
+    .cell:active:not(.X):not(.O) { transform: scale(0.94); }
+    .cell.X {
+      color: var(--rose);
+      text-shadow: 0 0 12px rgba(244,63,94,0.15);
+      background: rgba(244,63,94,0.06);
+      border-color: rgba(244,63,94,0.2);
+    }
+    .cell.O {
+      color: var(--sky);
+      text-shadow: 0 0 12px rgba(14,165,233,0.15);
+      background: rgba(14,165,233,0.06);
+      border-color: rgba(14,165,233,0.2);
+    }
+    .cell.win.X {
+      box-shadow: 0 0 16px 3px rgba(244,63,94,0.25), inset 0 0 12px rgba(244,63,94,0.05);
+      border-color: rgba(244,63,94,0.35);
+    }
+    .cell.win.O {
+      box-shadow: 0 0 16px 3px rgba(14,165,233,0.25), inset 0 0 12px rgba(14,165,233,0.05);
+      border-color: rgba(14,165,233,0.35);
+    }
+
+    /* ─── Buttons ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .btn:active { transform: translateY(0) scale(0.98); background: inherit; }
+    .btn-primary {
+      background: linear-gradient(135deg, #f43f5e, #a855f7) !important;
+      color: #fff; border: none;
+      box-shadow: 0 4px 16px rgba(244,63,94,0.25);
+    }
+    .btn-primary:active { transform: translateY(0) scale(0.98); box-shadow: 0 2px 8px rgba(244,63,94,0.2); }
+    .btn-block { width: 100%; }
+    .btn-sm { padding: 10px 20px; font-size: 13px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Chat Overlay ─── */
+    .chat-overlay {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 340px;
+      max-width: calc(100vw - 40px);
+      height: 460px;
+      background: var(--surface-card);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      z-index: 99;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      transform-origin: bottom right;
+      contain: layout paint;
+    }
+
+    .chat-overlay.open {
+      display: flex;
+      animation: chatSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .chat-overlay.closing {
+      animation: chatFade 0.25s ease-in forwards;
+    }
+
+    @keyframes chatSlide {
+      from { opacity: 0; transform: scale(0.85) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes chatFade {
+      to { opacity: 0; transform: scale(0.9) translateY(10px); }
+    }
+
+    .chat-head {
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(232,89,110,0.06), rgba(149,117,205,0.04));
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-head-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chat-head-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--ease);
+    }
+
+    .chat-msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      background: var(--bg-subtle);
+    }
+
+    .chat-msgs::-webkit-scrollbar { width: 4px; }
+    .chat-msgs::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 10px; }
+
+    .msg-wrap {
+      margin-bottom: 8px;
+      animation: msgPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes msgPop {
+      0% { opacity: 0; transform: translateY(10px) scale(0.85); }
+      50% { transform: translateY(-2px) scale(1.03); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .msg-wrap.sent { display: flex; flex-direction: row-reverse; }
+    .msg-wrap.received { display: flex; }
+
+    .msg-bubble {
+      max-width: 88%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-break: break-word;
+      position: relative;
+    }
+
+    .msg-bubble::before {
+      content: '';
+      position: absolute;
+      width: 10px; height: 10px;
+      border-radius: 2px;
+    }
+
+    .msg-wrap.sent .msg-bubble {
+      background: rgba(244, 63, 94, 0.12);
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-wrap.sent .msg-bubble::before {
+      right: -4px; bottom: 5px;
+      background: rgba(244, 63, 94, 0.12);
+      transform: rotate(45deg);
+    }
+
+    .msg-wrap.received .msg-bubble {
+      background: rgba(149, 117, 205, 0.06);
+      border: 1px solid rgba(149, 117, 205, 0.08);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-wrap.received .msg-bubble::before {
+      left: -4px; bottom: 5px;
+      background: rgba(149, 117, 205, 0.06);
+      transform: rotate(45deg);
+      border-left: 1px solid rgba(149, 117, 205, 0.08);
+      border-bottom: 1px solid rgba(149, 117, 205, 0.08);
+    }
+
+    .msg-sender {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--rose-light);
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .msg-wrap.received .msg-sender { color: var(--sky-light); }
+
+    .msg-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .msg-copy {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 24px; height: 24px;
+      border: none; border-radius: 6px;
+      background: var(--bg-subtle);
+      font-size: 11px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s, background 0.2s, transform 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transform: scale(0.9);
+    }
+    .msg-bubble:hover .msg-copy { opacity: 1; transform: scale(1); }
+    .msg-copy.copied { opacity: 1; transform: scale(1); color: #16a34a; background: rgba(22,163,74,0.08); }
+
+    .chat-foot {
+      display: flex;
+      gap: 6px;
+      padding: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .chat-foot input {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-family: inherit;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      outline: none;
+      color: var(--text);
+      transition: var(--ease);
+    }
+
+    .chat-foot input:focus {
+      border-color: rgba(244,63,94,0.2);
+    }
+
+    .chat-foot .btn { padding: 8px 16px; font-size: 13px; border-radius: 50px; }
+
+    /* ─── Chat FAB ─── */
+    .chat-fab {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--rose), var(--violet));
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(244,63,94,0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 100;
+      animation: fabFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes fabFloat {
+      0%, 100% { transform: translateY(0); box-shadow: 0 6px 24px rgba(244,63,94,0.25); }
+      50% { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(244,63,94,0.35); }
+    }
+
+    .chat-fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 10px 28px rgba(244,63,94,0.3);
+    }
+
+    .chat-fab:active {
+      transform: scale(0.92);
+    }
+
+    .badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 50px;
+      background: var(--rose);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(244, 63, 94, 0.5);
+    }
+
+    /* ─── Toast ─── */
+    .toast {
+      position: fixed;
+      bottom: 95px;
+      right: 20px;
+      width: 320px;
+      max-width: calc(100vw - 40px);
+      background: var(--surface-card);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      z-index: 101;
+      display: none;
+      overflow: hidden;
+      contain: layout paint;
+    }
+
+    .toast.show { animation: toastIn 0.4s var(--spring); }
+    .toast.hide { animation: toastOut 0.3s ease-in forwards; }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateX(20px); }
+    }
+
+    .toast-bar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--rose), var(--sky));
+      transform-origin: left;
+      animation: shrink 5s linear forwards;
+    }
+
+    @keyframes shrink { to { transform: scaleX(0); } }
+
+    .toast-body { padding: 18px; position: relative; }
+
+    .toast-close {
+      position: absolute; top: 10px; right: 10px;
+      width: 26px; height: 26px;
+      background: var(--bg-subtle);
+      border: none; border-radius: 50%;
+      cursor: pointer; font-size: 13px;
+      color: var(--text-muted);
+      transition: var(--ease);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .toast-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+
+    .toast-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--rose), var(--violet));
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; flex-shrink: 0;
+    }
+
+    .toast-title { font-weight: 700; font-size: 14px; color: var(--text); }
+    .toast-sub { font-size: 11px; color: var(--text-muted); }
+
+    .toast-msg {
+      padding: 10px 12px;
+      background: rgba(232,89,110,0.03);
+      border-left: 3px solid var(--rose);
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .toast-msg .sender { font-weight: 700; color: var(--rose-light); }
+
+    .toast-scores {
+      display: flex; gap: 10px;
+      background: var(--bg-subtle);
+      border-radius: 8px;
+      padding: 10px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .toast-scores > div:first-child { border-right: 1px solid var(--border-subtle); }
+    .toast-scores .label { font-size: 11px; color: var(--text-muted); }
+    .toast-scores .num { font-size: 18px; font-weight: 800; }
+    .toast-scores .num.c1 { color: var(--rose-light); }
+    .toast-scores .num.c2 { color: var(--sky-light); }
+
+    .toast-foot {
+      display: flex; justify-content: space-between;
+      margin-top: 10px; font-size: 10px; color: var(--text-muted);
+    }
+
+    /* ─── Confetti ─── */
+    .confetti-container {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 1000;
+      display: none;
+      contain: strict;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      opacity: 0;
+      animation: confettiFall 3s ease-in-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ─── Music ─── */
+    #musicBtn, #themeBtn {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface);
+      backdrop-filter: var(--glass-light);
+      -webkit-backdrop-filter: var(--glass-light);
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      font-size: 16px;
+      color: var(--text-muted);
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    #musicBtn { top: 16px; right: 16px; display: none; }
+    #themeBtn { top: 16px; right: 64px; }
+    #musicBtn:active, #themeBtn:active { transform: scale(0.92); }
+
+    /* ─── Error ─── */
+    .err-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      color: var(--rose);
+      padding: 12px 24px;
+      border: 1px solid rgba(232, 89, 110, 0.2);
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 2000;
+      box-shadow: 0 4px 16px rgba(232, 89, 110, 0.08);
+      animation: errIn 0.3s ease;
+    }
+
+    @keyframes errIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 820px) {
+      body { padding: 12px; }
+      .game { max-width: 100%; }
+      .login { padding: 36px 24px 32px; max-width: 380px; }
+      .chat-overlay { width: calc(100vw - 24px); right: 12px; bottom: 76px; height: 420px; }
+      .chat-fab { bottom: 20px; right: 12px; }
+      .cell { width: 30px; height: 30px; font-size: 14px; }
+      .grid-wrapper { padding: 8px; }
+      .game-header { padding: 12px 14px; }
+      .game-main { padding: 16px; }
+      .scores { gap: 6px; }
+      .score-card { min-width: 60px; padding: 4px 10px; }
+      .score-card .num { font-size: 17px; }
+      #musicBtn, #themeBtn { width: 36px; height: 36px; font-size: 14px; top: 12px; }
+      #musicBtn { right: 12px; }
+      #themeBtn { right: 56px; }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 8px; }
+      .game-header { flex-direction: column; gap: 8px; }
+      .scores { width: 100%; justify-content: center; }
+      .cell { width: 26px; height: 26px; font-size: 13px; border-radius: 6px; }
+      .grid-wrapper { padding: 6px; }
+      .grid { gap: 2px; }
+      .turn-info { font-size: 12px; padding: 6px 14px; }
+      .winner-text { font-size: 18px; }
+      .game-actions .btn { min-width: 90px; font-size: 12px; padding: 10px 14px; }
+      .chat-overlay { height: 380px; }
+      .login { padding: 28px 20px 28px; }
+      .game-main { padding: 12px; }
+      .room-badge span { font-size: 13px; }
+      .score-card { min-width: 55px; padding: 3px 8px; }
+      .score-card .num { font-size: 16px; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 6px; }
+      .login { padding: 24px 16px 24px; max-width: 100%; border-radius: var(--radius-lg); }
+      .login-brand { margin-bottom: 24px; }
+      .login-brand-icon { width: 56px; height: 56px; font-size: 24px; }
+      .login-brand h1 { font-size: 24px; }
+      .cell { width: 23px; height: 23px; font-size: 12px; border-radius: 5px; }
+      .grid { gap: 1.5px; }
+      .grid-wrapper { padding: 5px; border-radius: var(--radius); }
+      .chat-overlay { width: calc(100vw - 12px); right: 6px; bottom: 66px; height: 340px; border-radius: var(--radius); }
+      .chat-fab { bottom: 14px; right: 6px; width: 48px; height: 48px; font-size: 18px; }
+      .badge { min-width: 18px; height: 18px; font-size: 9px; }
+      .turn-info { font-size: 11px; padding: 5px 12px; }
+      .winner-text { font-size: 16px; }
+      #musicBtn, #themeBtn { width: 34px; height: 34px; font-size: 13px; top: 10px; }
+      #musicBtn { right: 10px; }
+      #themeBtn { right: 52px; }
+      .game-header { padding: 10px 12px; }
+      .game-main { padding: 10px; }
+      .toast { width: calc(100vw - 16px); right: 8px; bottom: 80px; }
+    }
+
+    @media (max-width: 400px) {
+      body { padding: 4px; }
+      .login { padding: 20px 12px 20px; }
+      .login h1 { font-size: 22px; }
+      .cell { width: 21px; height: 21px; font-size: 11px; border-radius: 4px; }
+      .grid { gap: 1px; }
+      .grid-wrapper { padding: 4px; }
+      .score-card { min-width: 48px; padding: 2px 6px; }
+      .score-card .num { font-size: 14px; }
+      .score-card .label { font-size: 9px; }
+      .chat-overlay { width: calc(100vw - 8px); right: 4px; bottom: 60px; height: 300px; }
+      .chat-fab { bottom: 12px; right: 4px; width: 44px; height: 44px; font-size: 16px; }
+      .room-badge span { font-size: 11px; }
+      .game-actions .btn { min-width: 80px; font-size: 11px; padding: 8px 12px; }
+      .btn { padding: 10px 16px; font-size: 13px; }
+      #musicBtn, #themeBtn { width: 30px; height: 30px; font-size: 12px; top: 8px; }
+      #musicBtn { right: 8px; }
+      #themeBtn { right: 46px; }
+    }
+
+    @media (max-width: 360px) {
+      .cell { width: 19px; height: 19px; font-size: 10px; }
+      .grid-wrapper { padding: 3px; }
+      .game-main { padding: 8px; }
+      .chat-overlay { height: 260px; }
+      .login-brand-icon { width: 48px; height: 48px; font-size: 20px; }
+      .login-brand h1 { font-size: 20px; }
+      .score-card .num { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Animated Background ─── -->
+  <div class="bg-canvas">
+    <div class="bg-orbs"></div>
+    <div class="bg-orbs"></div>
+    <div class="bg-orbs"></div>
+  </div>
+  <div class="bg-grid"></div>
+  <div class="particles" id="particles"></div>
+  <div class="confetti-container" id="confettiContainer"></div>
+  <button id="musicBtn">🔇</button>
+  <button id="themeBtn">🌙</button>
+
+  <!-- ─── Login ─── -->
+  <div class="login" id="login">
+    <div class="login-brand">
+      <div class="login-brand-icon">❤️</div>
+      <h1>vii</h1>
+      <p>Masuk untuk bermain bersama teman</p>
+    </div>
+    <div class="field">
+      <label for="nameInput">Nama</label>
+      <input type="text" id="nameInput" placeholder="Masukkan nama Anda">
+    </div>
+    <div class="field">
+      <label for="roomInput">Kode Ruangan</label>
+      <input type="text" id="roomInput" placeholder="Masukkan kode ruangan">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="joinGame()">Mulai Permainan</button>
+  </div>
+
+  <!-- ─── Game ─── -->
+  <div class="game" id="game">
+      <div class="game-main">
+        <div class="game-header">
+          <div class="room-badge">
+            <div class="room-badge-dot"></div>
+            <span>Ruangan <small id="roomTitle">—</small></span>
+          </div>
+          <div class="scores">
+            <div class="score-card p1">
+              <span class="label" id="p1Name">Player 1</span>
+              <span class="num" id="p1Score">0</span>
+            </div>
+            <div class="score-card p2">
+              <span class="label" id="p2Name">Player 2</span>
+              <span class="num" id="p2Score">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="turn-info">
+          <span class="dot" id="turnDot"></span>
+          <span class="label" id="turnText">Menunggu pemain lain...</span>
+        </div>
+
+        <div class="grid-wrapper">
+          <div class="grid" id="grid"></div>
+        </div>
+
+        <div class="winner-text" id="winner"></div>
+
+        <div class="game-actions">
+          <button class="btn btn-primary btn-sm" id="restartBtn" onclick="restartGame()" style="display:none">↻ Main Lagi</button>
+        </div>
+      </div>
+  </div>
+
+  <!-- ─── Chat Overlay ─── -->
+  <div class="chat-overlay" id="chatOverlay">
+    <div class="chat-head">
+      <div class="chat-head-left">💬 Chat</div>
+      <button class="chat-head-close" id="chatClose">✕</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="chat-foot">
+      <input type="text" id="chatInput" placeholder="Ketik pesan...">
+      <button class="btn btn-primary btn-sm" id="sendBtn">Kirim</button>
+    </div>
+  </div>
+
+  <!-- ─── Chat FAB ─── -->
+  <button class="chat-fab" id="chatFab">💬<span class="badge" id="badge">0</span></button>
+
+  <!-- ─── Toast ─── -->
+  <div class="toast" id="toast">
+    <div class="toast-bar"></div>
+    <div class="toast-body">
+      <button class="toast-close" onclick="closeToast()">✕</button>
+      <div class="toast-header">
+        <div class="toast-avatar">💬</div>
+        <div>
+          <div class="toast-title">Pesan Baru</div>
+          <div class="toast-sub">Dari pemain di ruangan</div>
+        </div>
+      </div>
+      <div class="toast-msg">
+        <span class="sender" id="toastSender"></span>
+        <span id="toastMsg"></span>
+      </div>
+      <div class="toast-scores">
+        <div>
+          <div class="label" id="toastP1">Player 1</div>
+          <div class="num c1" id="toastS1">0</div>
+        </div>
+        <div>
+          <div class="label" id="toastP2">Player 2</div>
+          <div class="num c2" id="toastS2">0</div>
+        </div>
+      </div>
+      <div class="toast-foot">
+        <span id="toastTime"></span>
+        <span>Hefi Game</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Firebase ─── -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <script>
+    // ─── Firebase ───
+    const firebaseConfig = {
+      apiKey: "AIzaSyDMkW_cZQUP9Fb-XXXXXXXXXXXXXX",
+      authDomain: "hefi-love-game.firebaseapp.com",
+      projectId: "hefi-love-game",
+      storageBucket: "hefi-love-game.appspot.com",
+      messagingSenderId: "347257937190",
+      appId: "1:347257937190:web:xxxxxxxxxxxxxxxx",
+      databaseURL: "https://hefi-love-game-default-rtdb.firebaseio.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ─── Sound Engine ───
+    let audioCtx = null;
+    function tone(freq, dur, type, vol) {
+      try {
+        if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = type || 'sine';
+        o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        g.gain.setValueAtTime(vol || 0.1, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + dur);
+      } catch (_) {}
+    }
+    function playClick() { tone(660,0.08,'sine',0.07); setTimeout(()=>tone(880,0.06,'sine',0.04),40); }
+    function playMsg() { tone(520,0.14,'sine',0.06); setTimeout(()=>tone(780,0.16,'sine',0.05),100); setTimeout(()=>tone(1040,0.1,'sine',0.03),200); }
+    function playSend() { tone(880,0.08,'sine',0.05); setTimeout(()=>tone(1100,0.1,'sine',0.04),50); setTimeout(()=>tone(1320,0.12,'sine',0.03),100); }
+    function playWin() {
+      [523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,0.22,'sine',0.07),i*90));
+      setTimeout(()=>[1047,1319,1568].forEach((f,i)=>setTimeout(()=>tone(f,0.3,'triangle',0.05),i*100)),400);
+    }
+
+    // ─── DOM ───
+    const $ = id => document.getElementById(id);
+    const login=$('login'), game=$('game'), grid=$('grid'), winner=$('winner');
+    const roomTitle=$('roomTitle'), turnDot=$('turnDot'), turnText=$('turnText');
+    const p1Name=$('p1Name'), p2Name=$('p2Name'), p1Score=$('p1Score'), p2Score=$('p2Score');
+    const restartBtn=$('restartBtn');
+    const chatMsgs=$('chatMsgs'), chatInput=$('chatInput'), sendBtn=$('sendBtn'), chatOverlay=$('chatOverlay');
+    const chatFab=$('chatFab'), badge=$('badge');
+    const toast=$('toast'), toastSender=$('toastSender'), toastMsg=$('toastMsg');
+    const toastP1=$('toastP1'), toastP2=$('toastP2'), toastS1=$('toastS1'), toastS2=$('toastS2'), toastTime=$('toastTime');
+    const musicBtn=$('musicBtn'), themeBtn=$('themeBtn');
+
+    // ─── State ───
+    let playerName='', playerSymbol='', roomCode='', isMyTurn=false, roomRef=null;
+    let musicOn=false, unread=0, roomData=null, toastTimer=null;
+    const GRID=15, WIN=6;
+
+    login.style.display='block';
+    spawnParticles(15);
+
+    // ─── Particles ───
+    function spawnParticles(n) {
+      const c=$('particles');
+      for(let i=0;i<n;i++){
+        const p=document.createElement('div'); p.className='particle';
+        const s=Math.random()*3+1;
+        p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*20+15}s;animation-delay:${Math.random()*10}s;opacity:${Math.random()*0.4+0.1}`;
+        c.appendChild(p);
+      }
+    }
+
+    // ─── Confetti ───
+    function fireConfetti() {
+      const c=$('confettiContainer'); c.textContent=''; c.style.display='block';
+      const colors=['#f43f5e','#fb7185','#06b6d4','#22d3ee','#8b5cf6','#a78bfa'], frag=document.createDocumentFragment();
+      for(let i=0;i<50;i++){
+        const p=document.createElement('div'); p.className='confetti-piece';
+        const s=Math.random()*8+4;
+        p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*6)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${Math.random()*2+2}s;animation-delay:${Math.random()*0.6}s`;
+        frag.appendChild(p);
+      }
+      c.appendChild(frag);
+      setTimeout(()=>c.style.display='none',3200);
+    }
+
+    // ─── Music ───
+    let bgNodes=null, melTimer=null, melIndex=0;
+    function startMusic(){
+      if(bgNodes) return;
+      try {
+        if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+        if(audioCtx.state==='suspended') audioCtx.resume();
+        const now=audioCtx.currentTime; bgNodes=[];
+
+        // Clean pad — soft sine octaves for depth without muddiness
+        [[130.81,0.008],[261.63,0.012]].forEach(([f,v])=>{
+          const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+          o.type='sine'; o.frequency.setValueAtTime(f,now);
+          g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(v,now+1.5);
+          o.connect(g); g.connect(audioCtx.destination); o.start(); bgNodes.push({o,g});
+        });
+
+        // Melody — clear, piano-like tone (sine with fast attack, smooth decay)
+        function playPiano(freq,dur){
+          const t=audioCtx.currentTime+0.005;
+          const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+          o.type='sine'; o.frequency.setValueAtTime(freq,t);
+          g.gain.setValueAtTime(0,t);
+          g.gain.linearRampToValueAtTime(0.035,t+0.015);
+          g.gain.exponentialRampToValueAtTime(0.008,t+dur*0.2);
+          g.gain.linearRampToValueAtTime(0,t+dur);
+          o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t+dur+0.03);
+        }
+
+        const melody=[
+          [262, 0.6], [294, 0.6], [330, 0.6], [392, 0.6],
+          [440, 0.9], [392, 0.3], [330, 0.6], [294, 0.6],
+          [262, 0.6], [330, 0.6], [392, 0.6], [440, 0.6],
+          [523, 0.9], [440, 0.3], [392, 0.6], [330, 0.6],
+          [262, 0.6], [262, 0.6], [294, 0.9], [330, 0.9],
+          [392, 0.6], [294, 0.6], [262, 1.2], [0, 0.6],
+          [330, 0.6], [392, 0.6], [440, 0.6], [523, 0.6],
+          [392, 0.9], [440, 0.3], [523, 0.9], [392, 0.6],
+          [330, 0.6], [262, 0.6], [294, 0.6], [330, 0.6],
+          [262, 0.9], [0, 0.3], [294, 0.9], [262, 1.2]
+        ];
+
+        function playTune(){
+          if(!bgNodes){melTimer=null; return;}
+          const [freq, dur]=melody[melIndex % melody.length];
+          melIndex++;
+          if(freq>0) playPiano(freq,dur);
+          melTimer=setTimeout(playTune, dur*1000-10);
+        }
+        melTimer=setTimeout(playTune, 500);
+      } catch(_){}
+    }
+    function stopMusic(){
+      if(melTimer){clearTimeout(melTimer);melTimer=null;}
+      melIndex=0;
+      if(bgNodes){
+        bgNodes.forEach(({o,g})=>{
+          try{g.gain.linearRampToValueAtTime(0,audioCtx.currentTime+0.3);setTimeout(()=>{try{o.stop();g.disconnect()}catch(_){}},300)}catch(_){}
+        });
+        bgNodes=null;
+      }
+    }
+    musicBtn.onclick=()=>{
+      musicOn=!musicOn;
+      musicBtn.textContent=musicOn?'🔊':'🔇';
+      if(musicOn) startMusic(); else stopMusic();
+    };
+    function toggleMusic(){musicBtn.click();}
+
+    // ─── Theme ───
+    let darkMode=localStorage.getItem('theme')==='dark';
+    if(darkMode) document.documentElement.setAttribute('data-theme','dark');
+    themeBtn.textContent=darkMode?'☀️':'🌙';
+    themeBtn.onclick=()=>{
+      darkMode=!darkMode;
+      document.documentElement.setAttribute('data-theme',darkMode?'dark':'');
+      localStorage.setItem('theme',darkMode?'dark':'light');
+      themeBtn.textContent=darkMode?'☀️':'🌙';
+    };
+
+    // ─── Login ───
+    $('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();joinGame();}});
+    $('roomInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();joinGame();}});
+    function joinGame() {
+      const name=$('nameInput').value.trim(), code=$('roomInput').value.trim();
+      if(!name||!code){
+        document.querySelectorAll('.field input').forEach(i=>{i.classList.add('error');setTimeout(()=>i.classList.remove('error'),500);});
+        return;
+      }
+      if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended') audioCtx.resume();
+      playerName=name; roomCode=code;
+      login.style.display='none';
+      game.style.display='block';
+      game.classList.add('show');
+      roomRef=db.ref('rooms/'+roomCode);
+      roomRef.once('value',snap=>{
+        const d=snap.val();
+        if(!d){
+          roomRef.set({players:{player1:playerName},board:Array(GRID*GRID).fill(''),turn:'X',status:'waiting',messages:{},scores:{player1:0,player2:0}});
+          playerSymbol='X'; isMyTurn=true;
+        } else {
+          if(d.players&&d.players.player2){errToast('Ruangan sudah penuh!'); return;}
+          roomRef.child('players/player2').set(playerName);
+          roomRef.child('status').set('playing');
+          playerSymbol='O'; isMyTurn=false;
+        }
+        chatFab.style.display='flex';
+        musicBtn.style.display='flex';
+        themeBtn.style.display='flex';
+        roomTitle.textContent=roomCode;
+        listenRoom(roomRef);
+        toggleMusic();
+      });
+    }
+
+    function escapeHtml(str){const d=document.createElement('div');d.textContent=str;return d.innerHTML;}
+    function copyMsg(btn){
+      navigator.clipboard.writeText(decodeURIComponent(btn.dataset.text)).then(()=>{
+        btn.textContent='✓'; btn.classList.add('copied');
+        setTimeout(()=>{btn.textContent='📋';btn.classList.remove('copied');},1500);
+      }).catch(()=>{});
+    }
+    function errToast(msg){const e=document.createElement('div');e.className='err-toast';e.textContent=msg;document.body.appendChild(e);setTimeout(()=>e.remove(),2800);}
+
+    // ─── Room Listener ───
+    function listenRoom(ref) {
+      ref.on('value',snap=>{
+        const d=snap.val(); if(!d||!d.board) return;
+        roomData=d;
+        const frag=document.createDocumentFragment();
+        const board=d.board;
+        for(let i=0;i<board.length;i++){
+          const cell=board[i];
+          const el=document.createElement('div'); el.className='cell '+cell;
+          el.textContent=cell==='X'?'🩷':cell==='O'?'🩵':'';
+          el.onclick=()=>move(i,ref,d); frag.appendChild(el);
+        }
+        grid.textContent=''; grid.appendChild(frag);
+        if(d.status==='playing'){
+          isMyTurn=d.turn===playerSymbol;
+          turnText.textContent=isMyTurn?'Giliran Kamu!':'Menunggu lawan...';
+          turnDot.className='dot'+(isMyTurn?'':' waiting');
+        }
+        if(d.winner){
+          const wn=d.winner.symbol==='X'?d.players.player1:d.players.player2;
+          winner.textContent='🎉 '+wn+' menang!'; winner.classList.add('show');
+          playWin(); restartBtn.style.display='inline-flex'; fireConfetti();
+          if(d.winner.winningCells){const cells=grid.children;d.winner.winningCells.forEach(idx=>{if(cells[idx])cells[idx].classList.add('win');});}
+        } else {
+          winner.textContent=''; winner.classList.remove('show'); restartBtn.style.display='none';
+        }
+        if(d.players){
+          p1Name.textContent=d.players.player1||'Player 1'; p2Name.textContent=d.players.player2||'Player 2';
+          p1Score.textContent=(d.scores&&d.scores.player1)||0; p2Score.textContent=(d.scores&&d.scores.player2)||0;
+        }
+      });
+      ref.child('messages').on('child_added',snap=>{
+        const m=snap.val(); if(!m) return;
+        const isMe=m.sender===playerName;
+        const wrap=document.createElement('div'); wrap.className='msg-wrap '+(isMe?'sent':'received');
+        const bubble=document.createElement('div'); bubble.className='msg-bubble';
+        bubble.innerHTML='<div class="msg-sender">'+escapeHtml(m.sender)+'</div><div class="msg-text">'+escapeHtml(m.text)+'</div><button class="msg-copy" data-text="'+encodeURIComponent(m.text)+'">📋</button>';
+        wrap.appendChild(bubble);
+        chatMsgs.appendChild(wrap); chatMsgs.scrollTop=chatMsgs.scrollHeight;
+        if(!chatMsgs._copyListener){ chatMsgs.addEventListener('click',e=>{const b=e.target.closest('.msg-copy');if(b)copyMsg(b);}); chatMsgs._copyListener=true; }
+        if(!isMe){
+          playMsg();
+          if(!isChatVisible()){showToast(m.sender,m.text); unread++; badge.textContent=unread; badge.style.display='flex';}
+        }
+      });
+    }
+
+    // ─── Move ───
+    function move(idx,ref,d){
+      if(!isMyTurn||d.board[idx]!==''||d.winner) return;
+      playClick();
+      d.board[idx]=playerSymbol;
+      const next=playerSymbol==='X'?'O':'X', win=checkWin(d.board), updates={board:d.board,turn:next};
+      if(win){
+        const key=win.symbol==='X'?'player1':'player2';
+        const scores={...(d.scores||{player1:0,player2:0})};
+        scores[key]=(scores[key]||0)+1; updates.winner=win; updates.scores=scores;
+      }
+      ref.update(updates);
+    }
+
+    // ─── Win Check ───
+    function checkWin(board){
+      const lines=[];
+      for(let r=0;r<GRID;r++) for(let c=0;c<GRID;c++){
+        const i=r*GRID+c;
+        if(c<=GRID-WIN) lines.push(Array.from({length:WIN},(_,k)=>i+k));
+        if(r<=GRID-WIN) lines.push(Array.from({length:WIN},(_,k)=>i+k*GRID));
+        if(r<=GRID-WIN&&c<=GRID-WIN) lines.push(Array.from({length:WIN},(_,k)=>i+k*(GRID+1)));
+        if(r<=GRID-WIN&&c>=WIN-1) lines.push(Array.from({length:WIN},(_,k)=>i+k*(GRID-1)));
+      }
+      for(const line of lines){const f=board[line[0]];if(f&&line.every(idx=>board[idx]===f)) return{symbol:f,winningCells:line};}
+      return null;
+    }
+
+    // ─── Restart ───
+    function restartGame(){if(!roomRef) return; const cells=grid.children;for(let i=0;i<cells.length;i++)cells[i].classList.remove('win'); roomRef.update({board:Array(GRID*GRID).fill(''),turn:'X',winner:null,status:'playing'});}
+
+    // ─── Chat ───
+    let isComposing=false;
+    function sendMsg(){
+      const t=chatInput.value.trim();
+      if(t&&roomRef&&!isComposing){
+        roomRef.child('messages').push().set({sender:playerName,text:t,timestamp:Date.now()});
+        chatInput.value='';
+        playSend();
+      }
+      chatInput.focus();
+    }
+    sendBtn.onclick=sendMsg;
+    chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!isComposing){e.preventDefault(); sendMsg();}});
+    chatInput.addEventListener('compositionstart',()=>{isComposing=true;});
+    chatInput.addEventListener('compositionend',()=>{isComposing=false;});
+
+    // ─── Chat Visibility ───
+    let chatOpen=false, chatClosing=false;
+    function isChatVisible(){return chatOpen;}
+    function openChat(){chatOpen=true; chatClosing=false; chatOverlay.className='chat-overlay open'; chatOverlay.style.display='flex'; chatFab.style.display='none'; unread=0; badge.style.display='none';}
+    function closeChat(){if(chatClosing||!chatOpen) return; chatClosing=true; chatOverlay.className='chat-overlay closing'; setTimeout(()=>{chatOverlay.style.display='none'; chatOverlay.className='chat-overlay'; chatOpen=false; chatClosing=false; chatFab.style.display='flex';},250);}
+    chatFab.onclick=openChat;
+    $('chatClose').onclick=closeChat;
+    themeBtn.style.display='flex';
+
+    // ─── Toast ───
+    function showToast(sender,msg){
+      toastSender.textContent=sender; toastMsg.textContent=msg;
+      toastP1.textContent=roomData?.players?.player1||'Player 1'; toastP2.textContent=roomData?.players?.player2||'Player 2';
+      toastS1.textContent=roomData?.scores?.player1||0; toastS2.textContent=roomData?.scores?.player2||0;
+      toastTime.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      closeToast(true);
+      setTimeout(()=>{toast.className='toast show'; toast.style.display='block'; const bar=toast.querySelector('.toast-bar'); bar.style.animation='none'; void bar.offsetHeight; bar.style.animation='shrink 5s linear forwards';},50);
+      clearTimeout(toastTimer); toastTimer=setTimeout(closeToast,5200);
+    }
+    function closeToast(immediate){if(toast.style.display!=='block') return; if(immediate){toast.style.display='none';return;} toast.className='toast hide'; setTimeout(()=>{toast.style.display='none';toast.className='toast';},300);}
+  </script>
+</body>
+</html>
